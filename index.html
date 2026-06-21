@@ -12,6 +12,7 @@
       background: #000;
       color: #fff;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
     }
 
@@ -25,11 +26,12 @@
       align-items: center;
       justify-content: center;
       z-index: 100;
-      gap: 24px;
+      gap: 20px;
+      padding: 24px;
     }
 
     #lock-screen img.skull-lock {
-      width: 140px;
+      width: clamp(100px, 30vw, 140px);
       opacity: 0.9;
       animation: pulse 2.5s ease-in-out infinite;
     }
@@ -55,7 +57,7 @@
       padding: 12px 24px;
       text-align: center;
       outline: none;
-      width: 280px;
+      width: min(280px, 85vw);
       letter-spacing: 0.15em;
       transition: border-color 0.2s;
     }
@@ -93,6 +95,7 @@
       display: none;
       position: relative;
       height: 100vh;
+      height: 100dvh;
       width: 100vw;
     }
 
@@ -136,7 +139,7 @@
     }
 
     #skull-main {
-      width: clamp(140px, 22vw, 220px);
+      width: clamp(130px, 45vw, 220px);
       filter: drop-shadow(0 0 20px rgba(255,107,107,0.6));
       animation: float 4s ease-in-out infinite;
     }
@@ -147,7 +150,7 @@
     }
 
     #group-name {
-      font-size: clamp(1rem, 3vw, 1.6rem);
+      font-size: clamp(1.1rem, 5vw, 1.6rem);
       letter-spacing: 0.4em;
       color: rgba(255,255,255,0.8);
       text-shadow: 0 1px 6px rgba(0,0,0,0.8);
@@ -179,10 +182,10 @@
       background: rgba(0,0,0,0.55);
       border: 2px solid rgba(255,107,107,0.6);
       border-radius: 10px;
-      font-size: clamp(2rem, 6vw, 4rem);
+      font-size: clamp(2rem, 10vw, 4rem);
       font-weight: 900;
       line-height: 1;
-      min-width: clamp(72px, 12vw, 110px);
+      min-width: clamp(68px, 18vw, 110px);
       padding: 12px 6px;
       text-align: center;
       text-shadow: 0 0 20px rgba(255,107,107,0.8);
@@ -191,13 +194,13 @@
 
     .cd-label {
       color: rgba(255,255,255,0.65);
-      font-size: clamp(0.55rem, 1.5vw, 0.8rem);
+      font-size: clamp(0.6rem, 2.5vw, 0.8rem);
       letter-spacing: 0.2em;
       text-transform: uppercase;
     }
 
     #event-label {
-      font-size: clamp(0.75rem, 2vw, 1rem);
+      font-size: clamp(0.8rem, 3vw, 1rem);
       letter-spacing: 0.25em;
       color: rgba(255,255,255,0.55);
       text-transform: uppercase;
