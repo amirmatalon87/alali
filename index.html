@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>alali</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Arial Black', Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── PASSWORD SCREEN ── */
+    #lock-screen {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      gap: 24px;
+    }
+
+    #lock-screen img.skull-lock {
+      width: 140px;
+      opacity: 0.9;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.07); }
+    }
+
+    #lock-screen h1 {
+      font-size: 2.8rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    #lock-screen input {
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1.2rem;
+      padding: 12px 24px;
+      text-align: center;
+      outline: none;
+      width: 280px;
+      letter-spacing: 0.15em;
+      transition: border-color 0.2s;
+    }
+
+    #lock-screen input:focus {
+      border-color: #ff6b6b;
+    }
+
+    #lock-screen button {
+      background: #ff6b6b;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      padding: 12px 40px;
+      text-transform: uppercase;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    #lock-screen button:hover { background: #e05555; transform: scale(1.04); }
+    #lock-screen button:active { transform: scale(0.97); }
+
+    #lock-error {
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      min-height: 1.2em;
+    }
+
+    /* ── MAIN SITE ── */
+    #main-site {
+      display: none;
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    #bg {
+      position: absolute;
+      inset: 0;
+      background: url('bg.jpg') center center / cover no-repeat;
+      filter: brightness(0.55);
+    }
+
+    #overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.35) 0%,
+        rgba(0,0,0,0.15) 40%,
+        rgba(0,0,0,0.6) 100%
+      );
+    }
+
+    #content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 20px;
+    }
+
+    #site-title {
+      font-size: clamp(2.5rem, 8vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 0 40px rgba(255,107,107,0.7), 0 2px 8px rgba(0,0,0,0.8);
+    }
+
+    #skull-main {
+      width: clamp(140px, 22vw, 220px);
+      filter: drop-shadow(0 0 20px rgba(255,107,107,0.6));
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    #group-name {
+      font-size: clamp(1rem, 3vw, 1.6rem);
+      letter-spacing: 0.4em;
+      color: rgba(255,255,255,0.8);
+      text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+      opacity: 0;
+      animation: fadeInText 2s ease-in forwards;
+      animation-delay: 3s;
+    }
+
+    @keyframes fadeInText {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ── COUNTDOWN ── */
+    #countdown-wrap {
+      display: flex;
+      gap: clamp(12px, 3vw, 36px);
+      margin-top: 10px;
+    }
+
+    .cd-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cd-num {
+      background: rgba(0,0,0,0.55);
+      border: 2px solid rgba(255,107,107,0.6);
+      border-radius: 10px;
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1;
+      min-width: clamp(72px, 12vw, 110px);
+      padding: 12px 6px;
+      text-align: center;
+      text-shadow: 0 0 20px rgba(255,107,107,0.8);
+      color: #fff;
+    }
+
+    .cd-label {
+      color: rgba(255,255,255,0.65);
+      font-size: clamp(0.55rem, 1.5vw, 0.8rem);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    #event-label {
+      font-size: clamp(0.75rem, 2vw, 1rem);
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+    }
+
+    /* ── MUTE BUTTON ── */
+    #mute-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 10;
+      background: rgba(0,0,0,0.5);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    #mute-btn:hover { background: rgba(0,0,0,0.75); border-color: rgba(255,255,255,0.6); }
+    #mute-btn svg { width: 24px; height: 24px; fill: #fff; }
+
+    /* hidden YouTube player */
+    #yt-player {
+      position: fixed;
+      bottom: -200px;
+      left: -200px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOCK SCREEN ── -->
+<div id="lock-screen">
+  <img class="skull-lock" src="skull.png" alt="Shburim" />
+
+  <input type="password" id="pw-input" placeholder="סיסמה" autocomplete="off" />
+  <button onclick="checkPW()">כנס</button>
+  <div id="lock-error"></div>
+</div>
+
+<!-- ── MAIN SITE ── -->
+<div id="main-site">
+  <div id="bg"></div>
+  <div id="overlay"></div>
+
+  <div id="content">
+    <img id="skull-main" src="skull.png" alt="Shburim skull" />
+    <div id="group-name">בחזרה לכרם</div>
+
+    <div id="countdown-wrap">
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-days">00</div>
+        <div class="cd-label">ימים</div>
+      </div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-hours">00</div>
+        <div class="cd-label">שעות</div>
+      </div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-mins">00</div>
+        <div class="cd-label">דקות</div>
+      </div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-secs">00</div>
+        <div class="cd-label">שניות</div>
+      </div>
+    </div>
+
+    <div id="event-label">17.07.2026 · 13:00</div>
+  </div>
+</div>
+
+<!-- Mute button -->
+<div id="mute-btn" onclick="toggleMute()" style="display:none">
+  <svg id="icon-on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+  <svg id="icon-off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+</div>
+
+<!-- YouTube iframe (hidden, used for audio) -->
+<iframe id="yt-player"
+  src=""
+  allow="autoplay"
+  frameborder="0">
+</iframe>
+
+<script>
+  const PASSWORD = 'mayimmayimmayim@@';
+
+  function checkPW() {
+    const val = document.getElementById('pw-input').value;
+    if (val === PASSWORD) {
+      enter();
+    } else {
+      const err = document.getElementById('lock-error');
+      err.textContent = 'סיסמה שגויה. נסה שוב.';
+      document.getElementById('pw-input').value = '';
+      setTimeout(() => { err.textContent = ''; }, 2500);
+    }
+  }
+
+  document.getElementById('pw-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPW();
+  });
+
+  function enter() {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('main-site').style.display = 'block';
+    startCountdown();
+    startMusic();
+  }
+
+  // ── COUNTDOWN ──
+  const TARGET = new Date('2026-07-17T13:00:00');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function startCountdown() {
+    function tick() {
+      const now = new Date();
+      const diff = TARGET - now;
+      if (diff <= 0) {
+        document.getElementById('cd-days').textContent  = '00';
+        document.getElementById('cd-hours').textContent = '00';
+        document.getElementById('cd-mins').textContent  = '00';
+        document.getElementById('cd-secs').textContent  = '00';
+        return;
+      }
+      const days  = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins  = Math.floor((diff % 3600000)  / 60000);
+      const secs  = Math.floor((diff % 60000)    / 1000);
+      document.getElementById('cd-days').textContent  = pad(days);
+      document.getElementById('cd-hours').textContent = pad(hours);
+      document.getElementById('cd-mins').textContent  = pad(mins);
+      document.getElementById('cd-secs').textContent  = pad(secs);
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  // ── MUSIC ──
+  let muted = false;
+
+  function startMusic() {
+    const iframe = document.getElementById('yt-player');
+    iframe.src = 'https://www.youtube.com/embed/ti8B-3830iQ?autoplay=1&loop=1&playlist=ti8B-3830iQ&controls=0&enablejsapi=1';
+    document.getElementById('mute-btn').style.display = 'flex';
+  }
+
+  function toggleMute() {
+    muted = !muted;
+    const iframe = document.getElementById('yt-player');
+    iframe.contentWindow.postMessage(
+      JSON.stringify({ event: 'command', func: muted ? 'mute' : 'unMute', args: [] }),
+      '*'
+    );
+    document.getElementById('icon-on').style.display = muted ? 'none' : 'block';
+    document.getElementById('icon-off').style.display = muted ? 'block' : 'none';
+  }
+</script>
+</body>
+</html>
