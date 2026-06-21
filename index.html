@@ -276,7 +276,9 @@
 </div>
 
 <!-- Audio player -->
-<audio id="audio-player" loop src="song.mp3"></audio>
+<audio id="audio-player" loop preload="auto">
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
 
 <script>
   const PASSWORD = 'mayimmayimmayim@@';
@@ -338,7 +340,13 @@
 
   function startMusic() {
     const audio = document.getElementById('audio-player');
-    audio.play();
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // retry on next user interaction
+        document.addEventListener('click', () => audio.play(), { once: true });
+      });
+    }
     document.getElementById('mute-btn').style.display = 'flex';
   }
 
